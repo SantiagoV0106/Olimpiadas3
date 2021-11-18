@@ -2,147 +2,263 @@
 //Juan David Pelaez 
 //Santiago Velazco
 
-let hair = [];
-let eyes = [];
-let mouth = [];
-let clothes = [];
-let changeH;
-let changeE;
-let changeM;
-let changeC;
-let skin;
-let face;
-let eyebrow;
-let nose;
 
-let buttons = [];
+class Pacman {
+  constructor(x, y, fila, columna, matriz, image) {
+    this.x = x;
+    this.y = y;
+    this.fila = fila;
+    this.columna = columna;
+    this.matriz = matriz;
+    this.image = image;
+  } 
+  show() {
+    imageMode(CENTER);
+    image(this.image, this.x, this.y,50,50);
+    rotate(1)
+  } 
 
+  getX() {
+    return this.x;
+  }
+
+  getY() {
+    return this.y;
+  }
+  move () {
+    switch (key) {
+      case 'a':
+        if (this.columna - 1 >= 0 && this.matriz[this.fila][this.columna - 1] === 0) {
+          this.x -= 50;
+          this.columna--;
+
+        }
+        break;
+      case 'd':
+        if (this.columna + 1 < this.matriz[0].length && matriz[this.fila][this.columna + 1] === 0) {
+          this.x += 50;
+          this.columna++;
+        }
+        break;
+      case 'w':
+        if (this.fila - 1 >= 0 && this.matriz[this.fila - 1][this.columna] === 0) {
+          this.y -= 50;
+          this.fila--;
+        }
+        break;
+      case 's':
+        if (this.fila + 1 < matriz[0].length && matriz[this.fila + 1][this.columna] === 0) {
+          this.y += 50;
+          this.fila++;
+        }
+        break;
+    }
+  }
+}
+
+class Fantasmacuadros {
+  constructor(x, y, fila, columna, matriz, score = 100) {
+    this.x = x;
+    this.y = y;
+    this.fila = fila;
+    this.columna = columna;
+    this.matriz = matriz;
+    this.score = score
+  }
+
+  show() {
+    fill(255, 0,0 );
+    rect(this.x, this.y, 40, 40);
+  }
+
+  getX() {
+    return this.x;
+  }
+
+  getY() {
+    return this.y;
+  }
+
+  getScore() {
+    return this.score;
+  }
+
+  move(matriz) {
+    let dir = parseInt(random(4));
+    switch (dir) {
+      case 0:
+        if (this.columna - 1 >= 0 && this.matriz[this.fila][this.columna - 1] === 0) {
+          this.x -= 50;
+          this.columna--;
+        }
+        break;
+      case 1:
+        if (this.columna + 1 < this.matriz[0].length && this.matriz[this.fila][this.columna + 1] === 0) {
+          this.x += 50;
+          this.columna++;
+        }
+        break;
+      case 2:
+        if (this.fila - 1 >= 0 && this.matriz[this.fila - 1][this.columna] === 0) {
+          this.y -= 50;
+          this.fila--;
+        }
+        break;
+      case 3:
+        if (this.fila + 1 < this.matriz[0].length && this.matriz[this.fila + 1][this.columna] === 0) {
+          this.y += 50;
+          this.fila++;
+        }
+        break;
+    }
+  }
+}
+
+class Coins {
+  constructor(x, y, fila, columna, puntos = 50) {
+    this.x = x;
+    this.y = y;
+    this.fila = fila;
+    this.columna = columna;
+    this.puntos = puntos;
+  }
+
+  show() {
+    fill(255, 255, 0);
+    circle(this.x, this.y, 10);
+  }
+
+  getX() {
+    return this.x;
+  }
+
+  getY() {
+    return this.y;
+  }
+
+  getPuntos() {
+    return this.puntos;
+  }
+}
+
+let coins = [];
+let fantasmas = [];
+let score = 0;
+let matriz = [
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+  [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
+  [1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+  [1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+  [1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+  [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
+  [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+
+];
+
+let pacmanCerrado;
+let pacmanMedio;
+let pacmanAbierto;
+let pacman;
 function setup() {
-  createCanvas(300, 300);
-  skin = new Pictures(loadImage("/Pictures/Hair/cuerpo.png"));
-  face = new Pictures(loadImage("/Pictures/Hair/cara.png"));
-  eyebrow = new Pictures(loadImage("/Pictures/Hair/cejas.png"));
-  nose = new Pictures(loadImage("/Pictures/Hair/nari.png"));
- 
-  changeH = 1;
-  changeE = 1;
-  changeM = 1;
-  changeC = 1;
-  //cabello
-  hair[0] = new Pictures(loadImage("/Pictures/Hair/pelo1.png"));
-  hair[1] = new Pictures(loadImage("/Pictures/Hair/pelo1.png"));
-  hair[2] = new Pictures(loadImage("/Pictures/Hair/pelo2.png"));
-  hair[3] = new Pictures(loadImage("/Pictures/Hair/pelo3.png"));
-  hair[4] = new Pictures(loadImage("/Pictures/Hair/pelo4.png"));
-  hair[5] = new Pictures(loadImage("/Pictures/Hair/pelo4.png"));
-  //ojos
-  eyes[0] = new Pictures(loadImage("/Pictures/Eyes/ojo1.png"));
-  eyes[1] = new Pictures(loadImage("/Pictures/Eyes/ojo1.png"));
-  eyes[2] = new Pictures(loadImage("/Pictures/Eyes/ojo2.png"));
-  eyes[3] = new Pictures(loadImage("/Pictures/Eyes/ojo3.png"));
-  eyes[4] = new Pictures(loadImage("/Pictures/Eyes/ojo4.png"));
-  eyes[5] = new Pictures(loadImage("/Pictures/Eyes/ojo4.png"));
-  //boca
-  mouth[0] = new Pictures(loadImage("/Pictures/Mouth/boca1.png"));
-  mouth[1] = new Pictures(loadImage("/Pictures/Mouth/boca1.png"));
-  mouth[2] = new Pictures(loadImage("/Pictures/Mouth/boca2.png"));
-  mouth[3] = new Pictures(loadImage("/Pictures/Mouth/boca3.png"));
-  mouth[4] = new Pictures(loadImage("/Pictures/Mouth/boca4.png"));
-  mouth[5] = new Pictures(loadImage("/Pictures/Mouth/boca4.png"));
-
-  //facha
-  clothes[0] = new Pictures(loadImage("/Pictures/Clothes/ropa1.png"));
-  clothes[1] = new Pictures(loadImage("/Pictures/Clothes/ropa1.png"));
-  clothes[2] = new Pictures(loadImage("/Pictures/Clothes/ropa2.png"));
-  clothes[3] = new Pictures(loadImage("/Pictures/Clothes/ropa3.png"));
-  clothes[4] = new Pictures(loadImage("/Pictures/Clothes/ropa4.png"));
-  clothes[5] = new Pictures(loadImage("/Pictures/Clothes/ropa4.png"));
-  
-
-  for (let i = 0; i < 4; i++) {
-    buttons[i] = new Array(4);
-    for (let j = 0; j < 4; j++) {
-      buttons[i][j] = new Buttons((220*i)+40,(40*j)+150,15);
-    }
-  }
+  createCanvas(1200, 650);
+  monedas();
+  pacmanCerrado = loadImage("./images/PacMan.png");
+  pacmanMedio = loadImage("./images/pacmanMedio.png");
+  pacmanAbierto = loadImage("./images/pacmanAbierto.png");
+  pacman = new Pacman(75, 75, 1, 1, matriz, pacmanCerrado);
 }
 
+function monedas(){
+  coins.splice(coins);
+  
+  for (let fil = 0; fil < 24; fil++) {
+    for (let col = 0; col < 13; col++){
+      coins.push(new Coins(fil*50+25, col*50+25));
+    }
+  }
+  coins.push(new Fantasmacuadros(505, 305, 6, 10, matriz));
+  coins.push(new Fantasmacuadros(555, 305, 6, 11, matriz));
+  coins.push(new  Fantasmacuadros(605, 305, 6, 12, matriz));
+  coins.push(new  Fantasmacuadros(655, 305, 6, 13, matriz));
+}
 function draw() {
-  background(87,35,100);
+  background(0);
+  noStroke();
+  showCoins(matriz);
+  showGround();
+  if(frameCount%25 === 0){
+    pacman.image = pacmanCerrado;
+  }else if(frameCount%25 === 7){
+    pacman.image = pacmanMedio;
+  }else if(frameCount%25 === 14){
+    pacman.image = pacmanAbierto;
+  }else if(frameCount%25 === 21){
+    pacman.image = pacmanMedio;
+  }
 
-  fill(255);
-  textSize(20);
-  text("Feel free to change", 70,80);
-  textSize(15);
-  text("Make me happy", 100,100);
- 
-  skin.show();
-  face.show();
-  nose.show();
-  eyebrow.show();
-  eyes[changeE].show();
-  mouth[changeM].show();
-  clothes[changeC].show();
-  hair[changeH].show();
-  
-  for (let i = 0; i < 2; i++) {
-    for (let j = 0; j < 4; j++) {
-      buttons[i][j].show();
+
+  pacman.show();
+  resetGame();
+}
+function keyPressed(){
+  pacman.move();
+}
+function resetGame() {
+  for (let index = 0; index < coins.length; index++) {
+    const coin = coins[index];
+    if (coin instanceof Fantasmacuadros) {
+      if (dist(pacman.getX(), pacman.getY(), coin.getX(), coin.getY()) < 40) {
+        monedas();
+      } 
     }
   }
-
-  if (changeH === 5) {
-    changeH = 1;
-  }
-  if (changeH === 0) {
-    changeH = 5;
-  }
-  if (changeE === 5) {
-    changeE = 1;
-  }
-  if (changeE === 0) {
-    changeE = 5;
-  }
-  if (changeM === 5) {
-    changeM = 1;
-  }
-  if (changeM === 0) {
-    changeM = 5;
-  }
-  if (changeC === 5) {
-    changeC = 1;
-  }
-  if (changeC === 0) {
-    changeC = 5;
-  }  
-
 }
+function showCoins(matriz){
+  for (let index = 0; index < coins.length; index++) {
+    const coin = coins[index];
+    coin.show();
 
-function mousePressed() {
-  if (buttons[0][0].click(mouseX,mouseY)) {
-    changeH--;
+    if (coin instanceof Fantasmacuadros) {
+      if (frameCount % 15 == 0) {
+        coin.move(matriz);
+      }
+    }
   }
-  if (buttons[1][0].click(mouseX,mouseY)) {
-    changeH++;
+}
+function selectColor(fila, columna) {
+  switch (matriz[fila][columna]) {
+    case 0:
+      fill(0,0);
+      break;
+    case 1:
+      stroke(3);
+      fill(0, 0, 255);
+      break;
   }
-  if (buttons[0][1].click(mouseX,mouseY)) {
-    changeE--;
+}
+function showGround() {
+  for (let fila = 0; fila < matriz.length; fila++) {
+    for (let columna = 0; columna < matriz[fila].length; columna++) {
+      selectColor(fila, columna);
+      rect(columna * 50, fila * 50, 50, 50);
+    }
   }
-  if (buttons[1][1].click(mouseX,mouseY)) {
-    changeE++;
+  validateContact();
+}
+function validateContact() {
+  for (let index = 0; index < coins.length; index++) {
+    const coin = coins[index];
+    if (dist(pacman.getX(), pacman.getY(), coin.getX(), coin.getY()) < 25) {
+      score += coin.score;
+      coins.splice(index, 1);
+      break;
+    }
   }
-  if (buttons[0][2].click(mouseX,mouseY)) {
-    changeM--;
-  }
-  if (buttons[1][2].click(mouseX,mouseY)) {
-    changeM++;
-  }
-  if (buttons[0][3].click(mouseX,mouseY)) {
-    changeC--;
-  }
-  if (buttons[1][3].click(mouseX,mouseY)) {
-    changeC++;
-  }
- 
 }
 
