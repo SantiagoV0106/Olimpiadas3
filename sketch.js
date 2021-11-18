@@ -4,273 +4,120 @@
 //Santiago Velazco
 
 
-class Bola {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  show() {
-    fill(255);
-    ellipse(this.x, this.y, 20, 20);
-  }
+let generalCarFile1 = [];
+let generalCarFile2 = [];
+let generalCarFile3 = [];
+let generalCarFile4 = [];
+let generalCarFile5 = [];
 
-}
+let superCar = new elcarrito(50, 220, 30, 4);
 
-class Barra {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  show() {
-    fill(255);
-    rect(this.x, this.y, 100, 15);
-  }
-}
-
-class BloqueRojo {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  show() {
-    noStroke();
-    fill(148, 0, 211);
-    rect(this.x, this.y, 50, 25);
-  }
-  setX(x) {
-    this.x = x;
-  }
-  validarContacto(bolita) {
-    if (bolita.x > this.x && bolita.x < this.x + 50 &&
-      bolita.y > this.y && bolita.y < this.y + 25) {
-      return true;
-    }
-    return false;
-  }
-}
-
-class BloqueNaranja {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  show() {
-    fill(75, 0, 130);
-    rect(this.x, this.y, 50, 25);
-  }
-  validarContacto(bolita) {
-    if (bolita.x > this.x && bolita.x < this.x + 50 &&
-      bolita.y > this.y && bolita.y < this.y + 25) {
-      return true;
-    }
-    return false;
-  }
-}
-
-class BloqueAmarillo {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  show() {
-    fill(0, 255, 0);
-    rect(this.x, this.y, 50, 25);
-  }
-  validarContacto(bolita) {
-    if (bolita.x > this.x && bolita.x < this.x + 50 &&
-      bolita.y > this.y && bolita.y < this.y + 25) {
-      return true;
-    }
-    return false;
-  }
-}
-
-class BloqueLima {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  show() {
-    fill(255, 255, 0);
-    rect(this.x, this.y, 50, 25);
-  }
-  validarContacto(bolita) {
-    if (bolita.x > this.x && bolita.x < this.x + 50 &&
-      bolita.y > this.y && bolita.y < this.y + 25) {
-      return true;
-    }
-    return false;
-  }
-}
-
-class BloqueVerde {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  show() {
-    fill(255, 127, 0);
-    rect(this.x, this.y, 50, 25);
-  }
-
-  validarContacto(bolita) {
-    if (bolita.x > this.x && bolita.x < this.x + 50 &&
-      bolita.y < 135) {
-      return true;
-    }
-    return false;
-  }
-}
-
-
-let bolita = new Bola(200, 375);
-let barra;
-let isMoving;
-let calculoX;
-let calculoY;
-let rojos = [];
-let naranjas = [];
-let amarillos = [];
-let limas = [];
-let verdes = [];
+let gameOver;
 
 function setup() {
-  createCanvas(400, 400);
-  barra = new Barra(150, 385);
-  calculoX = 1;
-  calculoY = 1;
-  isMoving = false;
+  createCanvas(1400, 400);
 
+  gameOver = false;
+  let x = 50;
 
-  for (let index = 0; index < 8; index++) {
-    rojos.push(new BloqueRojo(index * 50, 0));
-    naranjas.push(new BloqueNaranja(index * 50, 25));
-    amarillos.push(new BloqueAmarillo(index * 50, 50));
-    limas.push(new BloqueLima(index * 50, 75));
-    verdes.push(new BloqueVerde(index * 50, 100));
+  for (let i = 0; i < 5; i++) {
+    generalCarFile1.push(new carrosmalos(x, 25, 30, 3.6)); //Fila 1
+    generalCarFile2.push(new carrosmalos(x, 105, 30, 3)); //Fila 2
+    generalCarFile3.push(new carrosmalos(x, 185, 30, 3.2)); //Fila 3
+    generalCarFile4.push(new carrosmalos(x, 265, 30, 4)); //Fila 4
+    generalCarFile5.push(new carrosmalos(x, 345, 30, 3)); //Fila 5
+    x += 300;
   }
-
 }
 
 function draw() {
-  background(165, 42, 42);
-  stroke(1);
+  background(255);
+  let y = 0;
 
-
-
-  for (let index = 0; index < 8; index++) {
-
-    if (rojos[index] !== undefined) {
-      rojos[index].show();
-    }
-    if (naranjas[index] !== undefined) {
-      naranjas[index].show();
-    }
-    if (amarillos[index] !== undefined) {
-      amarillos[index].show();
-    }
-    if (limas[index] !== undefined) {
-      limas[index].show();
-    }
-    if (verdes[index] !== undefined) {
-      verdes[index].show();
-    }
-  }
-  keyPressed();
-
-  if (isMoving === true) {
-    bolita.x += 2 * calculoX;
-    bolita.y -= 3 * calculoY;
-  }
-  if (bolita.y < 10) {
-    calculoY = -1;
-  } else if (bolita.x > 390) {
-    calculoX = -1;
-  } else if (bolita.x < 10) {
-    calculoX = 1;
-  }
-  if (bolita.x > barra.x && bolita.x < barra.x + 100 && bolita.y > 375) {
-    calculoY = 1;
-  }
-  if (bolita.y > 410) {
-    isMoving = false;
-    bolita.x = 200;
-    bolita.y = 375;
-  }
-  noStroke();
-  barra.show();
-  bolita.show();
-
-  validarContacto();
-
-}
-
-function validarContacto() {
-  for (let index = 0; index < 8; index++) {
-    if (verdes[index] !== undefined && verdes[index].validarContacto(bolita)) {
-      console.log("Contacto!!!");
-      verdes.splice(index, 1);
-      calculoY = -1;
-      return;
-    }
-    if (limas[index] !== undefined && limas[index].validarContacto(bolita)) {
-      console.log("Contacto!!!");
-      limas.splice(index, 1);
-      calculoY = -1;
-      return;
-    }
-    if (amarillos[index] !== undefined && amarillos[index].validarContacto(bolita)) {
-      console.log("Contacto!!!");
-      amarillos.splice(index, 1);
-      calculoY = -1;
-      return;
-    }
-    if (naranjas[index] !== undefined && naranjas[index].validarContacto(bolita)) {
-      console.log("Contacto!!!");
-      naranjas.splice(index, 1);
-      calculoY = -1;
-      return;
-    }
-    if (rojos[index] !== undefined && rojos[index].validarContacto(bolita)) {
-      console.log("Contacto!!!");
-      rojos.splice(index, 1);
-      calculoY = -1;
-      return;
-    }
-  }
-}
-
-function keyPressed() {
-  let mensaje;
-  if (keyIsPressed && barra.x >= 0 && barra.x <= 300) {
-
-    switch (key) {
-      case 'a' || 'D':
-        barra.x -= 3;
-        break;
-      case 'd' || 'D':
-        barra.x += 3;
-        break;
-    }
-    if (barra.x < 0) {
-      barra.x = 0;
-    } else if (barra.x > 300) {
-      barra.x = 300;
-    }
-  }
-  if (key === ' ') {
-    isMoving = true;
-    mensaje = " ";
+  //suelo
+  for (let i = 0; i < 5; i++) {
+    fill(200);
+    stroke(0);
+    rect(0, y, 1400, 90);
+    y += 80;
   }
 
-  if (isMoving === false) {
-    mensaje = "¿Ready m8? press space ";
+  for (let i = 0; i < 5; i++) {
+    
+    //Choque fila 1
+    if(generalCarFile1[i].validate(superCar.getX(),superCar.getY()) == true){
+      gameOver = true;
+      superCar.gameOver();
+      superCar.restart();
+      location.reload();
+    }
+
+    // fila 1
+    generalCarFile1[i].display();
+    generalCarFile1[i].move();
+
+    //Choque fila 2
+    if(generalCarFile2[i].validate(superCar.getX(),superCar.getY()) == true){
+      gameOver = true;
+      superCar.gameOver();
+      superCar.restart();
+      location.reload();
+    }
+
+    //fila 2
+    generalCarFile2[i].display();
+    generalCarFile2[i].move();
+
+    //Choque fila 3
+    if(generalCarFile3[i].validate(superCar.getX(),superCar.getY()) == true){
+      gameOver = true;
+      superCar.gameOver();
+      superCar.restart();
+      location.reload();
+    }
+
+    //fila 3
+    generalCarFile3[i].display();
+    generalCarFile3[i].move();
+
+    //Choque fila 4
+    if(generalCarFile4[i].validate(superCar.getX(),superCar.getY()) == true){
+      gameOver = true;
+      superCar.gameOver();
+      superCar.restart();
+      location.reload();
+    }
+
+    //fila 4
+    generalCarFile4[i].display();
+    generalCarFile4[i].move();
+
+    //Choque fila 5
+    if(generalCarFile5[i].validate(superCar.getX(),superCar.getY()) == true){
+      gameOver = true;
+      superCar.gameOver();
+      superCar.restart();
+      location.reload();
+    }
+    //fila 5
+    generalCarFile5[i].display();
+    generalCarFile5[i].move();
   }
 
+  //volver a empezar
+  if (superCar.getX() >= 1250) {
+    superCar.win();
+    superCar.restart();
+  }
+
+  //carro color
+  superCar.display();
+  superCar.move();
+
+  //Indicaciones
+  fill(0);
+  textSize(15);
+  text('Use this keys m8: w, a, s, d', 20,395);
 
 
-  fill(255);
-  textAlign(CENTER, CENTER);
-  textSize(30);
-  text(mensaje, 200, 180)
 }
