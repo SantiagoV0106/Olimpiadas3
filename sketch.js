@@ -1,264 +1,73 @@
+
 //Jose Gabriel Salazar 
 //Juan David Pelaez 
-//Santiago Velazco
+//Santiago Velazcolet torre
+let arma1
+let arma2
+let enemigo1 = []
+let enemigo2 = []
 
-
-class Pacman {
-  constructor(x, y, fila, columna, matriz, image) {
-    this.x = x;
-    this.y = y;
-    this.fila = fila;
-    this.columna = columna;
-    this.matriz = matriz;
-    this.image = image;
-  } 
-  show() {
-    imageMode(CENTER);
-    image(this.image, this.x, this.y,50,50);
-    rotate(1)
-  } 
-
-  getX() {
-    return this.x;
-  }
-
-  getY() {
-    return this.y;
-  }
-  move () {
-    switch (key) {
-      case 'a':
-        if (this.columna - 1 >= 0 && this.matriz[this.fila][this.columna - 1] === 0) {
-          this.x -= 50;
-          this.columna--;
-
-        }
-        break;
-      case 'd':
-        if (this.columna + 1 < this.matriz[0].length && matriz[this.fila][this.columna + 1] === 0) {
-          this.x += 50;
-          this.columna++;
-        }
-        break;
-      case 'w':
-        if (this.fila - 1 >= 0 && this.matriz[this.fila - 1][this.columna] === 0) {
-          this.y -= 50;
-          this.fila--;
-        }
-        break;
-      case 's':
-        if (this.fila + 1 < matriz[0].length && matriz[this.fila + 1][this.columna] === 0) {
-          this.y += 50;
-          this.fila++;
-        }
-        break;
-    }
-  }
-}
-
-class Fantasmacuadros {
-  constructor(x, y, fila, columna, matriz, score = 100) {
-    this.x = x;
-    this.y = y;
-    this.fila = fila;
-    this.columna = columna;
-    this.matriz = matriz;
-    this.score = score
-  }
-
-  show() {
-    fill(255, 0,0 );
-    rect(this.x, this.y, 40, 40);
-  }
-
-  getX() {
-    return this.x;
-  }
-
-  getY() {
-    return this.y;
-  }
-
-  getScore() {
-    return this.score;
-  }
-
-  move(matriz) {
-    let dir = parseInt(random(4));
-    switch (dir) {
-      case 0:
-        if (this.columna - 1 >= 0 && this.matriz[this.fila][this.columna - 1] === 0) {
-          this.x -= 50;
-          this.columna--;
-        }
-        break;
-      case 1:
-        if (this.columna + 1 < this.matriz[0].length && this.matriz[this.fila][this.columna + 1] === 0) {
-          this.x += 50;
-          this.columna++;
-        }
-        break;
-      case 2:
-        if (this.fila - 1 >= 0 && this.matriz[this.fila - 1][this.columna] === 0) {
-          this.y -= 50;
-          this.fila--;
-        }
-        break;
-      case 3:
-        if (this.fila + 1 < this.matriz[0].length && this.matriz[this.fila + 1][this.columna] === 0) {
-          this.y += 50;
-          this.fila++;
-        }
-        break;
-    }
-  }
-}
-
-class Coins {
-  constructor(x, y, fila, columna, puntos = 50) {
-    this.x = x;
-    this.y = y;
-    this.fila = fila;
-    this.columna = columna;
-    this.puntos = puntos;
-  }
-
-  show() {
-    fill(255, 255, 0);
-    circle(this.x, this.y, 10);
-  }
-
-  getX() {
-    return this.x;
-  }
-
-  getY() {
-    return this.y;
-  }
-
-  getPuntos() {
-    return this.puntos;
-  }
-}
-
-let coins = [];
-let fantasmas = [];
-let score = 0;
-let matriz = [
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-  [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
-  [1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-  [1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-  [1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-  [1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-  [1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-  [1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-  [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
-  [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-
-];
-
-let pacmanCerrado;
-let pacmanMedio;
-let pacmanAbierto;
-let pacman;
 function setup() {
-  createCanvas(1200, 650);
-  monedas();
-  pacmanCerrado = loadImage("./images/PacMan.png");
-  pacmanMedio = loadImage("./images/pacmanMedio.png");
-  pacmanAbierto = loadImage("./images/pacmanAbierto.png");
-  pacman = new Pacman(75, 75, 1, 1, matriz, pacmanCerrado);
-}
-
-function monedas(){
-  coins.splice(coins);
+  createCanvas(500, 500);
+  torre = new Torre(220, 220, 80, 100, 100)
+  arma1 = new Arma1(80, 80, 40, 40)
+  arma2 = new Arma2(80, 420, 40, 40)
   
-  for (let fil = 0; fil < 24; fil++) {
-    for (let col = 0; col < 13; col++){
-      coins.push(new Coins(fil*50+25, col*50+25));
-    }
-  }
-  coins.push(new Fantasmacuadros(505, 305, 6, 10, matriz));
-  coins.push(new Fantasmacuadros(555, 305, 6, 11, matriz));
-  coins.push(new  Fantasmacuadros(605, 305, 6, 12, matriz));
-  coins.push(new  Fantasmacuadros(655, 305, 6, 13, matriz));
 }
+
 function draw() {
-  background(0);
-  noStroke();
-  showCoins(matriz);
-  showGround();
-  if(frameCount%25 === 0){
-    pacman.image = pacmanCerrado;
-  }else if(frameCount%25 === 7){
-    pacman.image = pacmanMedio;
-  }else if(frameCount%25 === 14){
-    pacman.image = pacmanAbierto;
-  }else if(frameCount%25 === 21){
-    pacman.image = pacmanMedio;
+  background(0,143,57);
+  torre.pintar()
+  arma1.pintar()
+  arma2.pintar()
+
+  if (frameCount % 240 == 0) {
+    enemigo1.push(new Enemigo(500, 80, 50, 50, 2))
+    enemigo2.push(new Enemigo(500, 420, 50, 50, 2))
   }
 
+  enemigo1.forEach(function (elem, i) {
+    elem.pintar()
+    elem.mover()
+  })
 
-  pacman.show();
-  resetGame();
-}
-function keyPressed(){
-  pacman.move();
-}
-function resetGame() {
-  for (let index = 0; index < coins.length; index++) {
-    const coin = coins[index];
-    if (coin instanceof Fantasmacuadros) {
-      if (dist(pacman.getX(), pacman.getY(), coin.getX(), coin.getY()) < 40) {
-        monedas();
-      } 
-    }
-  }
-}
-function showCoins(matriz){
-  for (let index = 0; index < coins.length; index++) {
-    const coin = coins[index];
-    coin.show();
+  enemigo2.forEach(function (elem, i) {
+    elem.pintar()
+    elem.mover()
+  })
 
-    if (coin instanceof Fantasmacuadros) {
-      if (frameCount % 15 == 0) {
-        coin.move(matriz);
+  arma1.dispararAlt(enemigo1.length)
+  arma2.dispararAlt(enemigo2.length)
+
+  enemigo1.forEach(function (enemigo, i) {
+    arma1.balas.forEach(function (bala, j) {
+      if (dist(enemigo.x, enemigo.y, bala.x, bala.y) < enemigo.ancho / 2) {
+        arma1.balas.splice(j, 1)
+        enemigo.vida -= 1
       }
-    }
-  }
-}
-function selectColor(fila, columna) {
-  switch (matriz[fila][columna]) {
-    case 0:
-      fill(0,0);
-      break;
-    case 1:
-      stroke(3);
-      fill(0, 0, 255);
-      break;
-  }
-}
-function showGround() {
-  for (let fila = 0; fila < matriz.length; fila++) {
-    for (let columna = 0; columna < matriz[fila].length; columna++) {
-      selectColor(fila, columna);
-      rect(columna * 50, fila * 50, 50, 50);
-    }
-  }
-  validateContact();
-}
-function validateContact() {
-  for (let index = 0; index < coins.length; index++) {
-    const coin = coins[index];
-    if (dist(pacman.getX(), pacman.getY(), coin.getX(), coin.getY()) < 25) {
-      score += coin.score;
-      coins.splice(index, 1);
-      break;
-    }
-  }
-}
+    })
+  })
 
+  enemigo2.forEach(function (enemigo, i) {
+    arma2.balas.forEach(function (bala, j) {
+      if (dist(enemigo.x, enemigo.y, bala.x, bala.y) < enemigo.ancho / 2) {
+        arma2.balas.splice(j, 1)
+        enemigo.vida -= 1
+      }
+    })
+  })
+
+  enemigo1.forEach(function (elem, i) {
+    if (elem.vida <= 0) {
+      enemigo1.splice(i, 1)
+      arma1.objetivo = null
+    }
+  })
+
+  enemigo2.forEach(function (elem, i) {
+    if (elem.vida <= 0) {
+      enemigo2.splice(i, 1)
+      arma2.objetivo = null
+    }
+  })
+}
