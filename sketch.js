@@ -1,264 +1,120 @@
+
 //Jose Gabriel Salazar 
 //Juan David Pelaez 
 //Santiago Velazco
 
 
-class Pacman {
-  constructor(x, y, fila, columna, matriz, image) {
-    this.x = x;
-    this.y = y;
-    this.fila = fila;
-    this.columna = columna;
-    this.matriz = matriz;
-    this.image = image;
-  } 
-  show() {
-    imageMode(CENTER);
-    image(this.image, this.x, this.y,50,50);
-    rotate(1)
-  } 
+let cuadros =[[0,0,0],
+              [0,0,0],
+              [0,0,0]];
+let turno = true; // true --> 1 | false --> 2
 
-  getX() {
-    return this.x;
-  }
-
-  getY() {
-    return this.y;
-  }
-  move () {
-    switch (key) {
-      case 'a':
-        if (this.columna - 1 >= 0 && this.matriz[this.fila][this.columna - 1] === 0) {
-          this.x -= 50;
-          this.columna--;
-
-        }
-        break;
-      case 'd':
-        if (this.columna + 1 < this.matriz[0].length && matriz[this.fila][this.columna + 1] === 0) {
-          this.x += 50;
-          this.columna++;
-        }
-        break;
-      case 'w':
-        if (this.fila - 1 >= 0 && this.matriz[this.fila - 1][this.columna] === 0) {
-          this.y -= 50;
-          this.fila--;
-        }
-        break;
-      case 's':
-        if (this.fila + 1 < matriz[0].length && matriz[this.fila + 1][this.columna] === 0) {
-          this.y += 50;
-          this.fila++;
-        }
-        break;
-    }
-  }
-}
-
-class Fantasmacuadros {
-  constructor(x, y, fila, columna, matriz, score = 100) {
-    this.x = x;
-    this.y = y;
-    this.fila = fila;
-    this.columna = columna;
-    this.matriz = matriz;
-    this.score = score
-  }
-
-  show() {
-    fill(255, 0,0 );
-    rect(this.x, this.y, 40, 40);
-  }
-
-  getX() {
-    return this.x;
-  }
-
-  getY() {
-    return this.y;
-  }
-
-  getScore() {
-    return this.score;
-  }
-
-  move(matriz) {
-    let dir = parseInt(random(4));
-    switch (dir) {
-      case 0:
-        if (this.columna - 1 >= 0 && this.matriz[this.fila][this.columna - 1] === 0) {
-          this.x -= 50;
-          this.columna--;
-        }
-        break;
-      case 1:
-        if (this.columna + 1 < this.matriz[0].length && this.matriz[this.fila][this.columna + 1] === 0) {
-          this.x += 50;
-          this.columna++;
-        }
-        break;
-      case 2:
-        if (this.fila - 1 >= 0 && this.matriz[this.fila - 1][this.columna] === 0) {
-          this.y -= 50;
-          this.fila--;
-        }
-        break;
-      case 3:
-        if (this.fila + 1 < this.matriz[0].length && this.matriz[this.fila + 1][this.columna] === 0) {
-          this.y += 50;
-          this.fila++;
-        }
-        break;
-    }
-  }
-}
-
-class Coins {
-  constructor(x, y, fila, columna, puntos = 50) {
-    this.x = x;
-    this.y = y;
-    this.fila = fila;
-    this.columna = columna;
-    this.puntos = puntos;
-  }
-
-  show() {
-    fill(255, 255, 0);
-    circle(this.x, this.y, 10);
-  }
-
-  getX() {
-    return this.x;
-  }
-
-  getY() {
-    return this.y;
-  }
-
-  getPuntos() {
-    return this.puntos;
-  }
-}
-
-let coins = [];
-let fantasmas = [];
-let score = 0;
-let matriz = [
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-  [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
-  [1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-  [1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-  [1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-  [1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-  [1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-  [1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-  [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
-  [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-
-];
-
-let pacmanCerrado;
-let pacmanMedio;
-let pacmanAbierto;
-let pacman;
 function setup() {
-  createCanvas(1200, 650);
-  monedas();
-  pacmanCerrado = loadImage("./images/PacMan.png");
-  pacmanMedio = loadImage("./images/pacmanMedio.png");
-  pacmanAbierto = loadImage("./images/pacmanAbierto.png");
-  pacman = new Pacman(75, 75, 1, 1, matriz, pacmanCerrado);
+  createCanvas(800, 1000);
 }
 
-function monedas(){
-  coins.splice(coins);
-  
-  for (let fil = 0; fil < 24; fil++) {
-    for (let col = 0; col < 13; col++){
-      coins.push(new Coins(fil*50+25, col*50+25));
-    }
-  }
-  coins.push(new Fantasmacuadros(505, 305, 6, 10, matriz));
-  coins.push(new Fantasmacuadros(555, 305, 6, 11, matriz));
-  coins.push(new  Fantasmacuadros(605, 305, 6, 12, matriz));
-  coins.push(new  Fantasmacuadros(655, 305, 6, 13, matriz));
-}
 function draw() {
-  background(0);
+  background(255);
   noStroke();
-  showCoins(matriz);
-  showGround();
-  if(frameCount%25 === 0){
-    pacman.image = pacmanCerrado;
-  }else if(frameCount%25 === 7){
-    pacman.image = pacmanMedio;
-  }else if(frameCount%25 === 14){
-    pacman.image = pacmanAbierto;
-  }else if(frameCount%25 === 21){
-    pacman.image = pacmanMedio;
-  }
-
-
-  pacman.show();
-  resetGame();
-}
-function keyPressed(){
-  pacman.move();
-}
-function resetGame() {
-  for (let index = 0; index < coins.length; index++) {
-    const coin = coins[index];
-    if (coin instanceof Fantasmacuadros) {
-      if (dist(pacman.getX(), pacman.getY(), coin.getX(), coin.getY()) < 40) {
-        monedas();
-      } 
-    }
-  }
-}
-function showCoins(matriz){
-  for (let index = 0; index < coins.length; index++) {
-    const coin = coins[index];
-    coin.show();
-
-    if (coin instanceof Fantasmacuadros) {
-      if (frameCount % 15 == 0) {
-        coin.move(matriz);
+  fill(0, 36, 94);
+  textSize(80);
+  text('Triqui truco', 200, 120);
+  noFill();
+  
+  for(let i = 0; i < 3; i++) {
+    for(let j = 0; j < 3; j++) {
+      let x = 100 + i*200;
+      let y = 197 + j*200;
+      
+      switch (cuadros[j][i]) {
+        case 0:
+        fill(255);
+        break;
+        //turno equis
+        case 1:
+        textSize(140);
+        noStroke();
+        fill(25, 190, 232);
+        text("X",150 + i*200,355 + j*200);  
+        noFill();
+        break;
+        //turno círculo
+        case 2:
+        stroke(94,232,25);
+        strokeWeight(14);
+        circle(200 + i*200, 297 + j*200, 100);
+        noFill();
+        break;      
+        default:
+          break;
       }
+      //Cuadrícula
+      stroke(0);
+      strokeWeight(6);
+      rect(x,y,200,200);
     }
   }
-}
-function selectColor(fila, columna) {
-  switch (matriz[fila][columna]) {
-    case 0:
-      fill(0,0);
-      break;
-    case 1:
-      stroke(3);
-      fill(0, 0, 255);
-      break;
-  }
-}
-function showGround() {
-  for (let fila = 0; fila < matriz.length; fila++) {
-    for (let columna = 0; columna < matriz[fila].length; columna++) {
-      selectColor(fila, columna);
-      rect(columna * 50, fila * 50, 50, 50);
-    }
-  }
-  validateContact();
-}
-function validateContact() {
-  for (let index = 0; index < coins.length; index++) {
-    const coin = coins[index];
-    if (dist(pacman.getX(), pacman.getY(), coin.getX(), coin.getY()) < 25) {
-      score += coin.score;
-      coins.splice(index, 1);
-      break;
-    }
-  }
+  checkWinner();
 }
 
+function checkWinner() {
+  //filas i
+  opt1 = (cuadros[0][0] == cuadros[0][1]) && (cuadros[0][1] == cuadros[0][2]) && cuadros[0][0] != 0;
+  opt2 = (cuadros[1][0] == cuadros[1][1]) && (cuadros[1][1] == cuadros[1][2]) && cuadros[1][0] != 0;
+  opt3 = (cuadros[2][0] == cuadros[2][1]) && (cuadros[2][1] == cuadros[2][2]) && cuadros[2][0] != 0;
+   //columnas j
+  opt4 = (cuadros[0][0] == cuadros[1][0]) && (cuadros[1][0] == cuadros[2][0]) && cuadros[0][0] != 0;
+  opt5 = (cuadros[0][1] == cuadros[1][1]) && (cuadros[1][1] == cuadros[2][1]) && cuadros[0][1] != 0;
+  opt6 = (cuadros[0][2] == cuadros[1][2]) && (cuadros[1][2] == cuadros[2][2]) && cuadros[0][2] != 0;
+   //diagonales
+  opt7 = (cuadros[0][0] == cuadros[1][1]) && (cuadros[1][1] == cuadros[2][2]) && cuadros[0][0] != 0;
+  opt8 = (cuadros[2][0] == cuadros[1][1]) && (cuadros[1][1] == cuadros[0][2]) && cuadros[2][0] != 0;
+   
+
+  if(opt1 || opt2 || opt3 || opt4 || opt5 || opt6 || opt7 || opt8) {
+    if(turno) {
+     noStroke();
+     fill(94,232,25);
+     textSize(80);
+     text('¡Victoria!',250, 920);
+     
+   }else {
+    noStroke();
+    fill(25, 190, 232);
+    textSize(80);
+    text('¡Victoria!', 250, 920);
+   }
+  }
+  else {
+    for (i = 0; i < cuadros.length; i++) {
+      for (j = 0; j < cuadros[i].length; j++) {
+     if(cuadros[i][j] == 0) {
+     }
+   }
+   
+ }
+  noStroke();
+  fill(0, 0, 94);
+  textSize(80);
+  text('Empate', 250, 920);
+  }
+  
+}
+
+function mousePressed() {
+  for(let i = 0; i < 3; i++) {
+    for(let j = 0; j < 3; j++) {
+      let x = 100 + i*200;
+      let y = 197 + j*200;
+      let valorActual = cuadros[j][i];
+      if(mouseX > x && mouseX < x + 200 && mouseY > y && mouseY < y + 200 && valorActual === 0 ){
+        if(turno){
+          cuadros[j][i] = 1;
+        }else{
+          cuadros[j][i] = 2;
+        }
+        turno=!turno;
+      }     
+    }
+  }
+}
