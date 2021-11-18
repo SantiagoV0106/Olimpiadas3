@@ -1,73 +1,120 @@
 
 //Jose Gabriel Salazar 
 //Juan David Pelaez 
-//Santiago Velazcolet torre
-let arma1
-let arma2
-let enemigo1 = []
-let enemigo2 = []
+//Santiago Velazco
+
+
+let cuadros =[[0,0,0],
+              [0,0,0],
+              [0,0,0]];
+let turno = true; // true --> 1 | false --> 2
 
 function setup() {
-  createCanvas(500, 500);
-  torre = new Torre(220, 220, 80, 100, 100)
-  arma1 = new Arma1(80, 80, 40, 40)
-  arma2 = new Arma2(80, 420, 40, 40)
-  
+  createCanvas(800, 1000);
 }
 
 function draw() {
-  background(0,143,57);
-  torre.pintar()
-  arma1.pintar()
-  arma2.pintar()
-
-  if (frameCount % 240 == 0) {
-    enemigo1.push(new Enemigo(500, 80, 50, 50, 2))
-    enemigo2.push(new Enemigo(500, 420, 50, 50, 2))
+  background(255);
+  noStroke();
+  fill(0, 36, 94);
+  textSize(80);
+  text('Triqui truco', 200, 120);
+  noFill();
+  
+  for(let i = 0; i < 3; i++) {
+    for(let j = 0; j < 3; j++) {
+      let x = 100 + i*200;
+      let y = 197 + j*200;
+      
+      switch (cuadros[j][i]) {
+        case 0:
+        fill(255);
+        break;
+        //turno equis
+        case 1:
+        textSize(140);
+        noStroke();
+        fill(25, 190, 232);
+        text("X",150 + i*200,355 + j*200);  
+        noFill();
+        break;
+        //turno círculo
+        case 2:
+        stroke(94,232,25);
+        strokeWeight(14);
+        circle(200 + i*200, 297 + j*200, 100);
+        noFill();
+        break;      
+        default:
+          break;
+      }
+      //Cuadrícula
+      stroke(0);
+      strokeWeight(6);
+      rect(x,y,200,200);
+    }
   }
+  checkWinner();
+}
 
-  enemigo1.forEach(function (elem, i) {
-    elem.pintar()
-    elem.mover()
-  })
+function checkWinner() {
+  //filas i
+  opt1 = (cuadros[0][0] == cuadros[0][1]) && (cuadros[0][1] == cuadros[0][2]) && cuadros[0][0] != 0;
+  opt2 = (cuadros[1][0] == cuadros[1][1]) && (cuadros[1][1] == cuadros[1][2]) && cuadros[1][0] != 0;
+  opt3 = (cuadros[2][0] == cuadros[2][1]) && (cuadros[2][1] == cuadros[2][2]) && cuadros[2][0] != 0;
+   //columnas j
+  opt4 = (cuadros[0][0] == cuadros[1][0]) && (cuadros[1][0] == cuadros[2][0]) && cuadros[0][0] != 0;
+  opt5 = (cuadros[0][1] == cuadros[1][1]) && (cuadros[1][1] == cuadros[2][1]) && cuadros[0][1] != 0;
+  opt6 = (cuadros[0][2] == cuadros[1][2]) && (cuadros[1][2] == cuadros[2][2]) && cuadros[0][2] != 0;
+   //diagonales
+  opt7 = (cuadros[0][0] == cuadros[1][1]) && (cuadros[1][1] == cuadros[2][2]) && cuadros[0][0] != 0;
+  opt8 = (cuadros[2][0] == cuadros[1][1]) && (cuadros[1][1] == cuadros[0][2]) && cuadros[2][0] != 0;
+   
 
-  enemigo2.forEach(function (elem, i) {
-    elem.pintar()
-    elem.mover()
-  })
+  if(opt1 || opt2 || opt3 || opt4 || opt5 || opt6 || opt7 || opt8) {
+    if(turno) {
+     noStroke();
+     fill(94,232,25);
+     textSize(80);
+     text('¡Victoria!',250, 920);
+     
+   }else {
+    noStroke();
+    fill(25, 190, 232);
+    textSize(80);
+    text('¡Victoria!', 250, 920);
+   }
+  }
+  else {
+    for (i = 0; i < cuadros.length; i++) {
+      for (j = 0; j < cuadros[i].length; j++) {
+     if(cuadros[i][j] == 0) {
+     }
+   }
+   
+ }
+  noStroke();
+  fill(0, 0, 94);
+  textSize(80);
+  text('Empate', 250, 920);
+  }
+  
+}
 
-  arma1.dispararAlt(enemigo1.length)
-  arma2.dispararAlt(enemigo2.length)
-
-  enemigo1.forEach(function (enemigo, i) {
-    arma1.balas.forEach(function (bala, j) {
-      if (dist(enemigo.x, enemigo.y, bala.x, bala.y) < enemigo.ancho / 2) {
-        arma1.balas.splice(j, 1)
-        enemigo.vida -= 1
-      }
-    })
-  })
-
-  enemigo2.forEach(function (enemigo, i) {
-    arma2.balas.forEach(function (bala, j) {
-      if (dist(enemigo.x, enemigo.y, bala.x, bala.y) < enemigo.ancho / 2) {
-        arma2.balas.splice(j, 1)
-        enemigo.vida -= 1
-      }
-    })
-  })
-
-  enemigo1.forEach(function (elem, i) {
-    if (elem.vida <= 0) {
-      enemigo1.splice(i, 1)
-      arma1.objetivo = null
+function mousePressed() {
+  for(let i = 0; i < 3; i++) {
+    for(let j = 0; j < 3; j++) {
+      let x = 100 + i*200;
+      let y = 197 + j*200;
+      let valorActual = cuadros[j][i];
+      if(mouseX > x && mouseX < x + 200 && mouseY > y && mouseY < y + 200 && valorActual === 0 ){
+        if(turno){
+          cuadros[j][i] = 1;
+        }else{
+          cuadros[j][i] = 2;
+        }
+        turno=!turno;
+      }     
     }
-  })
-
-  enemigo2.forEach(function (elem, i) {
-    if (elem.vida <= 0) {
-      enemigo2.splice(i, 1)
-      arma2.objetivo = null
-    }
-  })
+  }
 }
