@@ -1,71 +1,90 @@
-let bolita = new Bolita(250,250,30,255,0,0);;
-let player1 = new Rectangulo(0, 200, 15, 120);
-let player2 = new Rectangulo2(465,250,15,120);
-let sel = new Rectangulo2;
 
-function setup() {
-  createCanvas(500, 500); 
-  sel = null;
-  
-}
 //Jose Gabriel Salazar 
 //Juan David Pelaez 
 //Santiago Velazco
-function draw() {
-  let yRect1 = player1.getY();
-  let yRect2 = player2.getY();
-  let bx = bolita.getX();
-  let by = bolita.getY();
-  let score1 = bolita.getScore1();
-  let score2 = bolita.getScore2();
+let tank;
+let aliens = [];
+let bullets = [];
+let looser = false;
 
-  background(0);
-  textSize(20);
-	text("Atari Pong", 200, 30);
-	text(score1, 150, 30);
-	text(score2, 320, 30);
 
-  bolita.pintar();
-  player1.pintar();
-  player2.pintar();
-  bolita.mover();
-  player1.mover();
-  
-  if (bx >= 460 && by > yRect2 && by < (yRect2 + 100)) {
-    bolita.setMoveRight(false);
+
+function setup() {
+  createCanvas(630, 600);
+  tank = new jugador();
+  for (let i = 0; i < 6; i++) {
+    aliens.push(new Aliensongos(random(0, 630), random(-50, 0))); //Creates Aliens
   }
-
-  if (bx <= 15 && by > yRect1 && by < (yRect1 + 90)) {
-    bolita.setMoveRight(true);
-  }
-  mousePressed();
-  mouseDragged();
 }
+
+function draw() {
+  background(220);
+  tank.show();
+  for (let i = 0; i < aliens.length; i++) {
+    aliens[i].show()
+  }
+
+  for (let i = 0; i < bullets.length; i++) {
+    bullets[i].show();
+    removeDeathBullets();
+  }
+
+  validateImpact();
+  validateLost();
+
+  if (looser === true) {
+    fill(255);
+    textSize(58);
+    textAlign(CENTER);
+    text('CAGASTE', 314, 340);
+  }
+}
+
 
 
 function mousePressed() {
-  let xC2 = player2.getX();
-  let yC2 = player2.getY();
-  //lC2 = player2.getBase();
-  let lC2 = player2.getAltura();
-  let b1 = bolita.getX();
-  let b2 = bolita.getY();
-  let diam = bolita.getDiametro();
-  let mov = bolita.isMov();
 
-  if (dist(mouseX, mouseY, xC2, yC2) < lC2 && dist(mouseX, mouseY, xC2 + 20, yC2 + 80) < lC2) {
-    sel = player2;
-  }
+  bullets.push(new disparos(tank.getX(), tank.getY()));
 
-  if (dist(mouseX, mouseY, b1, b2) < diam) {
-    bolita.setMov(!mov);
+}
+
+function keyPressed() {
+  switch (key) {
+    case 'd':
+      tank.move("RIGHT")
+      break;
+    case 'a':
+      tank.move("LEFT")
+      break;
   }
 }
 
-function mouseDragged(){
-  if (sel != null) {
-    sel.setY(mouseY);
+function removeDeathBullets() {
+  for (let i = 0; i < bullets.length; i++) {
+    if (!bullets[i].isAlive()) {
+      bullets.splice(i, 1);
+      break;
+
+    }
+
   }
 }
 
+function validateImpact() {
+  for (let i = 0; i < bullets.length; i++) {
+    for (let j = 0; j < aliens.length; j++) {
+      if (dist(bullets[i].getX(), bullets[i].getY(), aliens[j].getX(), aliens[j].getY()) < aliens[j].getTam() / 2) {
+        aliens.splice(j, 1);
+        console.log("impact");
+      }
+    }
+  }
+}
 
+function validateLost() {
+  for (let i = 0; i < aliens.length; i++) {
+    if (aliens[i].getY() >= 600) {
+      looser = true;
+    }looser = false;
+  }
+}
